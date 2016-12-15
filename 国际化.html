@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html ng-app="myApp" ng-controller="myCtrl">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>{{info.title}}</title>
+    <style>
+        *{margin: 0; padding: 0; box-sizing: border-box;}
+        body{background: #fcc;}
+        h2{text-align: center; padding-top: 10px; font-weight: normal;}
+        select{width:100px; height: 32px; margin:10px;}
+        div{width:100%; padding:10px;}
+        .pageHead{height:100px; background: #ffcc00;}
+        .pageMain{height:500px; background: #ffbb66;}
+        .pageFoot{height:100px; background: #eecc00;}
+    </style>
+</head>
+<body>
+<h2>{{info.title}}</h2>
+<select ng-model="myValue" ng-init="myValue='zh'" ng-change="changeLanguage(myValue)">   <!-- ng-init="myValue='zh'"是给model设置初始值，解决select第一个option空值 -->
+    <option value="zh">中文</option>
+    <option value="en">English</option>
+</select>
+<div class="pageHead">{{info.head}}</div>
+<div class="pageMain">{{info.main}}</div>
+<div class="pageFoot">{{info.foot}}</div>
+<script src="js/jquery.min.js"></script>
+<script src="js/angular.min.js"></script>
+<script src="js/jquery.i18n.properties-min-1.0.9.js"></script>
+<script>
+    var app = angular.module("myApp", []);
+    var languageVal="zh";
+    app.controller("myCtrl",['$scope', function($scope) {
+        $scope.info = null;
+        function changeL()
+        {
+            jQuery.i18n.properties({// 加载资浏览器语言对应的资源文件
+                name : 'language', // 资源文件名称
+                language :languageVal, //默认为英文当改为zh_CN时页面显示中文语言
+                path : 'resource/', // 资源文件路径
+                mode : 'map', // 用 Map 的方式使用资源文件中的值
+                callback : function() {// 加载成功后设置显示内容
+                    $scope.info = $.i18n.map;
+                }
+            });
+        }
+        changeL();
+        $scope.changeLanguage=function(data) //获取select值
+        {
+            console.log(data); //获取到的select值
+            languageVal=data;
+            changeL();// 点击后重新获取语言包
+        }
+    }])
+</script>
+</body>
+</html>
